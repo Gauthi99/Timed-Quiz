@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Duplicate Email Notification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    h1 {
+      color: #4CAF50;
+    }
+    p {
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Duplicate Email Notification</h1>
+  <p>This Email ID is already taken.<br>
+  Please contact support if you have questions.</p>
+</body>
+</html>
