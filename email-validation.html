@@ -1,79 +1,77 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Email Validation</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    input {
-      font-size: 16px;
-      padding: 10px;
-      width: 300px;
-      margin: 10px;
-    }
-    button {
-      font-size: 16px;
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .message {
-      font-size: 14px;
-      margin-top: 10px;
-    }
-    iframe {
-      display: none; /* Hide the form initially */
-      width: 100%;
-      height: 500px;
-      border: none;
-    }
-  </style>
-  <script>
-    async function validateEmail() {
-      const email = document.getElementById('email').value;
-      const messageDiv = document.getElementById('message');
-
-      if (!email) {
-        messageDiv.textContent = 'Please enter your email address.';
-        return;
-      }
-
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbwe6ueY33qHQsNWlkXCzwgiVW9LcwzTw7A9begOsRx4DeO01dXt82IqgzjSytQUimS6DA/exec'; // Replace with your Web App URL
-      try {
-        const response = await fetch(`${scriptURL}?email=${encodeURIComponent(email)}`);
-        const result = await response.json();
-
-        if (result.registered) {
-          messageDiv.textContent = 'Your email is registered with TRR. Proceeding to the quiz...';
-          messageDiv.style.color = 'green';
-          document.getElementById('quiz-form').style.display = 'block'; // Show the form
-          document.getElementById('email-container').style.display = 'none'; // Hide the email input
-        } else {
-          messageDiv.textContent = 'Your email is not registered with TRR. Please register first.';
-          messageDiv.style.color = 'red';
+    <title>TRR Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
         }
-      } catch (error) {
-        messageDiv.textContent = 'Error checking email. Please try again later.';
-      }
-    }
-  </script>
+        input {
+            font-size: 18px;
+            padding: 10px;
+            width: 300px;
+            margin: 10px;
+        }
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button[disabled] {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .message {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        async function validateEmail() {
+            const email = document.getElementById('email').value;
+            const messageDiv = document.getElementById('message');
+            const nextButton = document.getElementById('next-button');
+
+            if (!email) {
+                messageDiv.textContent = 'Please enter an email.';
+                messageDiv.style.color = 'red';
+                nextButton.disabled = true;
+                return;
+            }
+
+            try {
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbwe6ueY33qHQsNWlkXCzwgiVW9LcwzTw7A9begOsRx4DeO01dXt82IqgzjSytQUimS6DA/exec'; // Your Web App URL
+                const response = await fetch(`${scriptURL}?email=${encodeURIComponent(email)}`);
+                const result = await response.json();
+
+                if (result.registered) {
+                    messageDiv.textContent = 'Your email is registered with TRR.';
+                    messageDiv.style.color = 'green';
+                    nextButton.disabled = false; // Enable the "Next" button
+                } else {
+                    messageDiv.textContent = 'Your email is not registered with TRR. Please contact support.';
+                    messageDiv.style.color = 'red';
+                    nextButton.disabled = true; // Disable the "Next" button
+                }
+            } catch (error) {
+                messageDiv.textContent = 'Error validating email. Please try again later.';
+                messageDiv.style.color = 'red';
+                nextButton.disabled = true;
+            }
+        }
+    </script>
 </head>
 <body>
-  <h1>Welcome to the TRR Quiz</h1>
-  <div id="email-container">
-    <input type="email" id="email" placeholder="Enter your email" />
-    <button onclick="validateEmail()">Validate Email</button>
+    <h1>Welcome to the TRR Quiz</h1>
+    <p>Please enter your email to proceed:</p>
+    <input type="email" id="email" placeholder="Enter your email" oninput="validateEmail()" />
     <div id="message" class="message"></div>
-  </div>
-  <iframe id="quiz-form" src="https://docs.google.com/forms/d/e/1FAIpQLSfL2S02zkmYfLEiHUW4SYw9iy4UAmgX0NygkJfKEexSCS7-zg/viewform?embedded=true"></iframe>
+    <button id="next-button" disabled onclick="startQuiz()">Next</button>
 </body>
 </html>
