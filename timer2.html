@@ -64,8 +64,8 @@
       const startButton = document.getElementById('start-button');
       startButton.style.display = 'none';
 
-      // Monitor the iframe URL for submission
-      monitorIframeURL();
+      // Monitor for form submission
+      monitorFormSubmission();
     }
 
     function startTimer(duration, display) {
@@ -87,16 +87,17 @@
       }, 1000);
     }
 
-    function monitorIframeURL() {
+    function monitorFormSubmission() {
       const iframe = document.getElementById('quiz-iframe');
+      const formSubmittedMessage = "Your response has been submitted";
 
-      const checkURL = setInterval(() => {
+      const checkFormSubmission = setInterval(() => {
         try {
-          const currentURL = iframe.contentWindow.location.href;
+          const doc = iframe.contentWindow.document;
 
-          // Check if the URL contains the "Thank You" page indication
-          if (currentURL.includes("formResponse")) {
-            clearInterval(checkURL); // Stop monitoring
+          // Check if "Your response has been submitted" is visible
+          if (doc.body.innerText.includes(formSubmittedMessage)) {
+            clearInterval(checkFormSubmission); // Stop monitoring
             stopTimer(); // Stop the timer
           }
         } catch (error) {
