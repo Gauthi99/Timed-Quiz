@@ -46,7 +46,7 @@
             }
 
             try {
-                const scriptURL = 'https://script.google.com/macros/s/AKfycbwe6ueY33qHQsNWlkXCzwgiVW9LcwzTw7A9begOsRx4DeO01dXt82IqgzjSytQUimS6DA/exec'; // Your Web App URL
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbz-BBrPVKRuGVjmqpgzuUlhd6jqhLKx4s7BRSCcpJ6YTm4ESzUL7jmCGHCgx1oylQpbRQ/exec'; // Your Web App URL
                 const response = await fetch(`${scriptURL}?email=${encodeURIComponent(email)}`); 
                 const result = await response.json();
 
