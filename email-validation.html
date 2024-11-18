@@ -47,7 +47,7 @@
 
             try {
                 const scriptURL = 'https://script.google.com/macros/s/AKfycbwe6ueY33qHQsNWlkXCzwgiVW9LcwzTw7A9begOsRx4DeO01dXt82IqgzjSytQUimS6DA/exec'; // Your Web App URL
-                const response = await fetch(`${scriptURL}?email=${encodeURIComponent(email)}`);
+                const response = await fetch(`${scriptURL}?email=${encodeURIComponent(email)}`); 
                 const result = await response.json();
 
                 if (result.registered) {
