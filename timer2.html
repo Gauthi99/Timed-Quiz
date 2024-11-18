@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Timed Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .timer {
+      background-color: #f8f9fa;
+      padding: 10px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+      display: none; /* Hidden initially */
+    }
+    .start-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      color: #fff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .start-btn:hover {
+      background-color: #0056b3;
+    }
+    iframe {
+      width: 100%;
+      height: 90vh;
+      border: none;
+      pointer-events: none; /* Disable interaction with the form initially */
+      opacity: 0.5; /* Make it semi-transparent to indicate it's disabled */
+    }
+    iframe.active {
+      pointer-events: auto; /* Enable interaction when activated */
+      opacity: 1; /* Remove transparency when activated */
+    }
+  </style>
+  <script>
+    let timerStarted = false;
+    let interval;
+
+    function startQuiz() {
+      if (timerStarted) return; // Prevent multiple starts
+      timerStarted = true;
+
+      // Start the timer
+      const duration = 10 * 60; // 10 minutes in seconds
+      const display = document.querySelector('#timer');
+      display.style.display = 'block'; // Show the timer
+      startTimer(duration, display);
+
+      // Activate the form
+      const iframe = document.getElementById('quiz-iframe');
+      iframe.classList.add('active'); // Enable interaction with the form
+
+      // Hide the Start button
+      const startButton = document.getElementById('start-button');
+      startButton.style.display = 'none';
+
+      // Monitor the iframe URL for submission
+      monitorIframeURL();
+    }
+
+    function startTimer(duration, display) {
+      let timer = duration, minutes, seconds;
+      interval = setInterval(() => {
+        minutes = Math.floor(timer / 60);
+        seconds = timer % 60;
+
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+
+        display.textContent = `Time Remaining: ${minutes}:${seconds}`;
+
+        if (--timer < 0) {
+          clearInterval(interval);
+          alert("Time's up! The quiz will now close.");
+          document.getElementById('form-container').innerHTML = "<h2>The quiz has ended. Thank you!</h2>";
+        }
+      }, 1000);
+    }
+
+    function monitorIframeURL() {
+      const iframe = document.getElementById('quiz-iframe');
+
+      const checkURL = setInterval(() => {
+        try {
+          const currentURL = iframe.contentWindow.location.href;
+
+          // Check if the URL contains the "Thank You" page indication
+          if (currentURL.includes("formResponse")) {
+            clearInterval(checkURL); // Stop monitoring
+            stopTimer(); // Stop the timer
+          }
+        } catch (error) {
+          // Ignore cross-origin errors during polling
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(interval); // Stop the timer
+      document.querySelector('#timer').textContent = "Quiz Submitted. Thank you!";
+    }
+  </script>
+</head>
+<body>
+  <h1>Welcome to the Timed Quiz</h1>
+  <p>Please complete your details and click "Start" to begin the quiz. You will have 10 minutes to complete it.</p>
+
+  <!-- Timer -->
+  <div class="timer" id="timer">Time Remaining: 10:00</div>
+
+  <!-- Google Form -->
+  <div id="form-container">
+    <iframe id="quiz-iframe" src="https://docs.google.com/forms/d/e/1FAIpQLSfL2S02zkmYfLEiHUW4SYw9iy4UAmgX0NygkJfKEexSCS7-zg/viewform?embedded=true"></iframe>
+    <!-- Start button displayed after entering details -->
+    <button id="start-button" class="start-btn" onclick="startQuiz()">Start</button>
+  </div>
+</body>
+</html>
